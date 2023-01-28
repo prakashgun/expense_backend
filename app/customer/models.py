@@ -17,6 +17,12 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
         Token.objects.create(user=instance)
 
 
+class UserPhone:
+    def __init__(self, country_code, phone):
+        self.country_code = country_code
+        self.phone = phone
+
+
 class Customer(models.Model):
     objects = models.Manager()
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)

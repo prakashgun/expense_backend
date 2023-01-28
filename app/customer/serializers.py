@@ -1,13 +1,27 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from .models import Customer
+from .models import Customer, UserPhone
 
 
 class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = '__all__'
+
+
+class UserPhoneSerializer(serializers.Serializer):
+    country_code = serializers.CharField(max_length=10)
+    phone = serializers.CharField(max_length=15)
+
+    def create(self, validated_data):
+        return UserPhone(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.country_code = validated_data.get('country_code', instance.country_code)
+        instance.phone = validated_data.get('phone', instance.phone)
+
+        return instance
 
 
 class UserSerializer(serializers.ModelSerializer):

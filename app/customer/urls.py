@@ -1,9 +1,9 @@
 from django.urls import path
 
-from .views import Register
+from .views import UserPhoneView
 
 app_name = 'customer'
 
 urlpatterns = [
-    path('register/', Register.as_view(), name='register')
+    path('user-phone/', UserPhoneView.as_view(), name='phone')
 ]
