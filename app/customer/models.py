@@ -1,10 +1,10 @@
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
-from django.contrib.auth import get_user_model
 
 
 class User(AbstractUser):
@@ -25,4 +25,8 @@ class UserPhone:
 
 class Customer(models.Model):
     objects = models.Manager()
+    id = models.AutoField(primary_key=True)
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
+    country_code = models.CharField(max_length=5, default='+91')
+    phone = models.CharField(max_length=15)
+    otp = models.CharField(max_length=4)

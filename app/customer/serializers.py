@@ -1,39 +1,65 @@
+import random
+
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from .models import Customer, UserPhone
+from .models import Customer
 
 
-class CustomerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Customer
-        fields = '__all__'
-
-
-class UserPhoneSerializer(serializers.Serializer):
+class RegisterSerializer(serializers.Serializer):
     country_code = serializers.CharField(max_length=10)
     phone = serializers.CharField(max_length=15)
+    first_name = serializers.CharField(max_length=200)
+    last_name = serializers.CharField(max_length=200)
+
+    def validate(self, attrs):
+        full_phone = f"{attrs['country_code']}{attrs['phone']}"
+        if get_user_model().objects.filter(username=full_phone, is_active=True).exists():
+            raise serializers.ValidationError('This phone number is already registered')
+
+        return attrs
 
     def create(self, validated_data):
-        return UserPhone(**validated_data)
+        full_phone = f"{validated_data['country_code']}{validated_data['phone']}"
+        otp = random.randrange(1111, 9999)
 
-    def update(self, instance, validated_data):
-        instance.country_code = validated_data.get('country_code', instance.country_code)
-        instance.phone = validated_data.get('phone', instance.phone)
-
-        return instance
-
-
-class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
-
-    class Meta:
-        model = get_user_model()
-        fields = '__all__'
-
-    def create(self, validated_data):
-        user = super().create(validated_data)
-        user.set_password(validated_data['password'])
+        user = get_user_model().objects.create_user(username=full_phone, password=f'pass{otp}', is_active=False)
         user.save()
 
-        return user
+        return Customer.objects.create(
+            user=user,
+            country_code=validated_data['country_code'],
+            phone=validated_data['phone'],
+            otp=otp
+        )
+
+    def update(self, instance, validated_data):
+        pass
+
+
+class VerifySerializer(serializers.Serializer):
+    country_code = serializers.CharField(max_length=10)
+    phone = serializers.CharField(max_length=15)
+    otp = serializers.IntegerField()
+
+    def validate(self, attrs):
+        if not Customer.objects.filter(
+                country_code=attrs['country_code'],
+                phone=attrs['phone'],
+                otp=attrs['otp']
+        ).exists():
+            raise serializers.ValidationError('Wrong OTP given')
+
+        return attrs
+
+    def create(self, validated_data):
+        full_phone = f"{validated_data['country_code']}{validated_data['phone']}"
+        user = get_user_model().objects.get(username=full_phone)
+        user.is_active = True
+        user.save()
+        customer = Customer.objects.filter(user=user)
+
+        return customer
+
+    def update(self, instance, validated_data):
+        pass

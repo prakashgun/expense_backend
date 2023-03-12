@@ -1,9 +1,11 @@
 from django.urls import path
 
-from .views import UserPhoneView
+from .views import RegisterView, VerifyRegisterView
 
 app_name = 'customer'
 
 urlpatterns = [
-    path('user-phone/', UserPhoneView.as_view(), name='phone')
+    path('register/', RegisterView.as_view(), name='register'),
+    path('verify-register/', VerifyRegisterView.as_view(), name='verify-register'),
+    path('login/', RegisterView.as_view(), name='login')
 ]
