@@ -14,9 +14,10 @@ logger = logging.getLogger(__name__)
 
 
 class PhoneClient:
+
     @staticmethod
     def send_otp(otp, full_phone):
-        # Send otp to user
+        """Send otp to user"""
         try:
             account_sid = os.environ['TWILIO_ACCOUNT_SID']
             auth_token = os.environ['TWILIO_AUTH_TOKEN']
@@ -39,9 +40,9 @@ class PhoneClient:
 
 
 class RegisterView(APIView):
-    permission_classes = [AllowAny]
-
     """Register a customer"""
+
+    permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
