@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
     # App
     'customer',
+    'expense'
 ]
 
 MIDDLEWARE = [
