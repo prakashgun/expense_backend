@@ -31,6 +31,8 @@ class PhoneClient:
                 from_=os.environ['TWILIO_PHONE_NUMBER'],
                 to=full_phone
             )
+
+            return True
         except TwilioRestException as e:
             logger.error(e)
             return False
@@ -48,9 +50,9 @@ class RegisterView(APIView):
             customer = serializer.save()
 
             if not PhoneClient.send_otp(otp=customer.otp, full_phone=customer.user.username):
-                return Response('Failure in sending One Time Password', status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                return Response({'message': 'Failure in sending OTP'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-            return Response('OTP Sent', status=status.HTTP_201_CREATED)
+            return Response({'message': 'OTP Sent'}, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -63,6 +65,6 @@ class VerifyRegisterView(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            return Response('Registration Verified', status=status.HTTP_200_OK)
+            return Response({'message': 'Registration Verified'}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -14,8 +14,10 @@ class RegisterSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         full_phone = f"{attrs['country_code']}{attrs['phone']}"
-        if get_user_model().objects.filter(username=full_phone, is_active=True).exists():
-            raise serializers.ValidationError('This phone number is already registered')
+        if get_user_model().objects.filter(username=full_phone).exists():
+            raise serializers.ValidationError(
+                'This phone number is already registered. Please use login page.'
+            )
 
         return attrs
 
