@@ -1,9 +1,8 @@
-import random
-
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from .models import Customer
+from .utilities import Utilities
 
 
 class RegisterSerializer(serializers.Serializer):
@@ -23,7 +22,7 @@ class RegisterSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         full_phone = f"{validated_data['country_code']}{validated_data['phone']}"
-        otp = random.randrange(1111, 9999)
+        otp = Utilities.generate_otp()
 
         user = get_user_model().objects.create_user(username=full_phone, password=f'pass{otp}', is_active=False)
         user.save()
