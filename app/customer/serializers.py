@@ -24,7 +24,13 @@ class RegisterSerializer(serializers.Serializer):
         full_phone = f"{validated_data['country_code']}{validated_data['phone']}"
         otp = Utilities.generate_otp()
 
-        user = get_user_model().objects.create_user(username=full_phone, password=f'pass{otp}', is_active=False)
+        user = get_user_model().objects.create_user(
+            username=full_phone,
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
+            password=f'pass{otp}',
+            is_active=False
+        )
         user.save()
 
         return Customer.objects.create(
