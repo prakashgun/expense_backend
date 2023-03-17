@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from twilio.base.exceptions import TwilioRestException
 from twilio.rest import Client
 
-from .serializers import RegisterSerializer, VerifySerializer
+from .serializers import RegisterSerializer, VerifyRegisterSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +62,7 @@ class VerifyRegisterView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        serializer = VerifySerializer(data=request.data)
+        serializer = VerifyRegisterSerializer(data=request.data)
 
         if serializer.is_valid():
             serializer.save()

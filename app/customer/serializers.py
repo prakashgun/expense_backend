@@ -44,7 +44,7 @@ class RegisterSerializer(serializers.Serializer):
         pass
 
 
-class VerifySerializer(serializers.Serializer):
+class VerifyRegisterSerializer(serializers.Serializer):
     country_code = serializers.CharField(max_length=10)
     phone = serializers.CharField(max_length=15)
     otp = serializers.IntegerField()
