@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from twilio.base.exceptions import TwilioRestException
 from twilio.rest import Client
 
-from .serializers import RegisterSerializer, VerifyRegisterSerializer
+from .serializers import RegisterSerializer, VerifyRegisterSerializer, LoginSerializer, VerifyLoginSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -67,5 +67,37 @@ class VerifyRegisterView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response({'message': 'Registration Verified'}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LoginView(APIView):
+    """Register a customer"""
+
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+
+        if serializer.is_valid():
+            customer = serializer.save()
+
+            if not PhoneClient.send_otp(otp=customer.otp, full_phone=customer.user.username):
+                return Response({'message': 'Failure in sending OTP'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            return Response({'message': 'OTP Sent'}, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class VerifyLoginView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = VerifyLoginSerializer(data=request.data)
+
+        if serializer.is_valid():
+            details = serializer.save()
+            return Response({'message': 'Login Verified', 'token': details['token'].key}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from rest_framework.authtoken.models import Token
 
 from .models import Customer
 from .utilities import Utilities
@@ -67,6 +68,52 @@ class VerifyRegisterSerializer(serializers.Serializer):
         customer = Customer.objects.filter(user=user)
 
         return customer
+
+    def update(self, instance, validated_data):
+        pass
+
+
+class LoginSerializer(serializers.Serializer):
+    country_code = serializers.CharField(max_length=10)
+    phone = serializers.CharField(max_length=15)
+
+    def validate(self, attrs):
+        full_phone = f"{attrs['country_code']}{attrs['phone']}"
+        if not get_user_model().objects.filter(username=full_phone).exists():
+            raise serializers.ValidationError(
+                'Cannot verify user. Please use register page if using first time.'
+            )
+
+        return attrs
+
+    def update(self, instance, validated_data):
+        pass
+
+    def create(self, validated_data):
+        pass
+
+
+class VerifyLoginSerializer(serializers.Serializer):
+    country_code = serializers.CharField(max_length=10)
+    phone = serializers.CharField(max_length=15)
+    otp = serializers.IntegerField()
+
+    def validate(self, attrs):
+        if not Customer.objects.filter(
+                country_code=attrs['country_code'],
+                phone=attrs['phone'],
+                otp=attrs['otp']
+        ).exists():
+            raise serializers.ValidationError('Wrong OTP given')
+
+        return attrs
+
+    def create(self, validated_data):
+        full_phone = f"{validated_data['country_code']}{validated_data['phone']}"
+        user = get_user_model().objects.get(username=full_phone)
+        token, created = Token.objects.get_or_create(user=user)
+
+        return {**validated_data, 'token': token}
 
     def update(self, instance, validated_data):
         pass
