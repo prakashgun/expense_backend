@@ -90,7 +90,10 @@ class LoginSerializer(serializers.Serializer):
         pass
 
     def create(self, validated_data):
-        pass
+        return Customer.objects.get(
+            country_code=validated_data['country_code'],
+            phone=validated_data['phone']
+        )
 
 
 class VerifyLoginSerializer(serializers.Serializer):
