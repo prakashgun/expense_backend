@@ -61,7 +61,7 @@ class RegisterViewTest(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    @patch('customer.views.PhoneClient.send_otp')
+    @patch('customer.utilities.PhoneClient.send_otp')
     def test_user_cannot_register_with_failure_sending_otp(self, send_otp_mock):
         send_otp_mock.return_value = False
 
@@ -78,7 +78,7 @@ class RegisterViewTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
         self.assertEqual(response.data['message'], 'Failure in sending OTP')
 
-    @patch('customer.views.PhoneClient.send_otp')
+    @patch('customer.utilities.PhoneClient.send_otp')
     def test_user_can_register_with_correct_data(self, send_otp_mock):
         send_otp_mock.return_value = True
 
@@ -95,7 +95,7 @@ class RegisterViewTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['message'], 'OTP Sent')
 
-    @patch('customer.views.PhoneClient.send_otp')
+    @patch('customer.utilities.PhoneClient.send_otp')
     def test_user_cannot_register_with_same_number_again(self, send_otp_mock):
         send_otp_mock.return_value = True
 
