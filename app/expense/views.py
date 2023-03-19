@@ -21,7 +21,7 @@ class AccountList(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = AccountSerializer(data=request.data)
+        serializer = AccountSerializer(data={**request.data, 'owner': request.user.id})
 
         if serializer.is_valid():
             serializer.save()
