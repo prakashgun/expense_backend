@@ -12,3 +12,6 @@ class Account(models.Model):
     owner = models.ForeignKey(get_user_model(), related_name='accounts', on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('name', 'owner')
