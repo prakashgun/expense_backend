@@ -62,4 +62,4 @@ class PrivateAccountListViewTest(TestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data['non_field_errors'], ['The fields name, owner must make a unique set.'])
+        self.assertEqual(response.data['non_field_errors'], ['This account name already exists'])
