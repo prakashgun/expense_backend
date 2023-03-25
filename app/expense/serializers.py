@@ -4,7 +4,6 @@ from .models import Account
 
 
 class AccountSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Account
-        fields = '__all__'
+        fields = ('name', 'initial_balance', 'owner')

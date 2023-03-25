@@ -32,13 +32,12 @@ class PrivateAccountListViewTest(TestCase):
 
         self.client.force_authenticate(user=self.user, token=self.user.auth_token)
 
-    # def test_add_account(self):
-    #     response = self.client.post(
-    #         ACCOUNT_LIST_URL,
-    #         data={
-    #             "name": "Bank 2,",
-    #             "initial_balance": 1300.40
-    #         }
-    #     )
-    #     print(response.json())
-    #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+    def test_add_account(self):
+        response = self.client.post(
+            ACCOUNT_LIST_URL,
+            data={
+                "name": "Bank 2,",
+                "initial_balance": 1300.40
+            }
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
