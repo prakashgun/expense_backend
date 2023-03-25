@@ -63,3 +63,28 @@ class PrivateAccountListViewTest(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data['non_field_errors'], ['This account name already exists'])
+
+    def test_added_accounts_visible_to_owner(self):
+        response = self.client.post(
+            ACCOUNT_LIST_URL,
+            data={
+                "name": "Bank 2",
+                "initial_balance": 1300.40
+            }
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = self.client.get(ACCOUNT_LIST_URL)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(
+            response.data,
+            [
+                {
+                    "name": "Bank 2",
+                    "initial_balance": 1300.40,
+                    "owner": self.user.id
+                }
+            ]
+        )
