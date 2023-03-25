@@ -88,3 +88,24 @@ class PrivateAccountListViewTest(TestCase):
                 }
             ]
         )
+
+    def test_account_is_not_visible_to_non_owners(self):
+        response = self.client.post(
+            ACCOUNT_LIST_URL,
+            data={
+                "name": "Bank 2",
+                "initial_balance": 1300.40
+            }
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        self.client.force_authenticate(self.user2, token=self.user2.auth_token)
+
+        response = self.client.get(ACCOUNT_LIST_URL)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(
+            response.data,
+            []
+        )

@@ -16,7 +16,11 @@ class AccountList(APIView):
     permission_classes = [permissions.IsAuthenticated, IsOwner]
 
     def get(self, request):
-        accounts = Account.objects.all()
+        accounts = Account.objects.filter(owner=request.user)
+
+        for account in accounts:
+            self.check_object_permissions(request, account)
+
         serializer = AccountSerializer(accounts, many=True)
         return Response(serializer.data)
 
