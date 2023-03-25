@@ -36,8 +36,30 @@ class PrivateAccountListViewTest(TestCase):
         response = self.client.post(
             ACCOUNT_LIST_URL,
             data={
-                "name": "Bank 2,",
+                "name": "Bank 2",
                 "initial_balance": 1300.40
             }
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_adding_duplicate_account_fails(self):
+        response = self.client.post(
+            ACCOUNT_LIST_URL,
+            data={
+                "name": "Bank 2",
+                "initial_balance": 1300.40
+            }
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = self.client.post(
+            ACCOUNT_LIST_URL,
+            data={
+                "name": "Bank 2",
+                "initial_balance": 1781
+            }
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data['non_field_errors'], ['The fields name, owner must make a unique set.'])
