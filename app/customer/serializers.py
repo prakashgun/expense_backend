@@ -65,9 +65,9 @@ class VerifyRegisterSerializer(serializers.Serializer):
         user = get_user_model().objects.get(username=full_phone)
         user.is_active = True
         user.save()
-        customer = Customer.objects.filter(user=user)
+        token, created = Token.objects.get_or_create(user=user)
 
-        return customer
+        return {**validated_data, 'token': token}
 
     def update(self, instance, validated_data):
         pass

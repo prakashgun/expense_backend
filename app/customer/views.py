@@ -37,8 +37,9 @@ class VerifyRegisterView(APIView):
         serializer = VerifyRegisterSerializer(data=request.data)
 
         if serializer.is_valid():
-            serializer.save()
-            return Response({'message': 'Registration Verified'}, status=status.HTTP_200_OK)
+            details = serializer.save()
+            return Response({'message': 'Registration Verified', 'token': details['token'].key},
+                            status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
