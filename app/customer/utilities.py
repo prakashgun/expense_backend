@@ -30,11 +30,11 @@ class PhoneClient:
             return False
 
         try:
-            client.messages.create(
-                body=f"Your OTP is {otp}",
-                from_=os.environ['TWILIO_PHONE_NUMBER'],
-                to=full_phone
-            )
+            # client.messages.create(
+            #     body=f"Your OTP is {otp}",
+            #     from_=os.environ['TWILIO_PHONE_NUMBER'],
+            #     to=full_phone
+            # )
 
             return True
         except TwilioRestException as e:

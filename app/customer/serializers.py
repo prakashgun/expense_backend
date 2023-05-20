@@ -67,7 +67,15 @@ class VerifyRegisterSerializer(serializers.Serializer):
         user.save()
         token, created = Token.objects.get_or_create(user=user)
 
-        return {**validated_data, 'token': token}
+        return {
+            **validated_data,
+            'token': token,
+            'user': {
+                'username': user.username,
+                'first_name': user.first_name,
+                'last_name': user.last_name
+            }
+        }
 
     def update(self, instance, validated_data):
         pass
@@ -116,7 +124,15 @@ class VerifyLoginSerializer(serializers.Serializer):
         user = get_user_model().objects.get(username=full_phone)
         token, created = Token.objects.get_or_create(user=user)
 
-        return {**validated_data, 'token': token}
+        return {
+            **validated_data,
+            'token': token,
+            'user': {
+                'username': user.username,
+                'first_name': user.first_name,
+                'last_name': user.last_name
+            }
+        }
 
     def update(self, instance, validated_data):
         pass
