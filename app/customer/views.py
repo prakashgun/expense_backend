@@ -38,10 +38,12 @@ class VerifyRegisterView(APIView):
 
         if serializer.is_valid():
             details = serializer.save()
-            return Response({
-                'message': 'Registration Verified',
-                'token': details['token'].key,
-                'user': details['user']},
+            return Response(
+                {
+                    'message': 'Registration Verified',
+                    'token': details['token'].key,
+                    'user': details['user']
+                },
                 status=status.HTTP_200_OK
             )
 
@@ -75,6 +77,9 @@ class VerifyLoginView(APIView):
 
         if serializer.is_valid():
             details = serializer.save()
-            return Response({'message': 'Login Verified', 'token': details['token'].key}, status=status.HTTP_200_OK)
+            return Response(
+                {'message': 'Login Verified', 'token': details['token'].key, 'user': details['user']},
+                status=status.HTTP_200_OK
+            )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
