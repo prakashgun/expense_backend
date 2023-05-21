@@ -56,3 +56,5 @@ class VerifyLoginTest(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['message'], 'Login Verified')
+        self.assertIn('token', response.data)
+        self.assertIn('user', response.data)

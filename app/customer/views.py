@@ -70,6 +70,7 @@ class LoginView(APIView):
 
 
 class VerifyLoginView(APIView):
+    """Verify authentication credentials"""
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -83,3 +84,11 @@ class VerifyLoginView(APIView):
             )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LogoutView(APIView):
+    """Logout a user"""
+
+    def post(self, request):
+        request.user.auth_token.delete()
+        return Response({'message': 'Logged out'}, status=status.HTTP_200_OK)
