@@ -37,7 +37,8 @@ class PrivateAccountListViewTest(TestCase):
             ACCOUNT_LIST_URL,
             data={
                 "name": "Bank 2",
-                "initial_balance": 1300.40
+                "initial_balance": 1300.40,
+                "note": "Secondary account"
             }
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -47,7 +48,8 @@ class PrivateAccountListViewTest(TestCase):
             ACCOUNT_LIST_URL,
             data={
                 "name": "Bank 2",
-                "initial_balance": 1300.40
+                "initial_balance": 1300.40,
+                "note": "Default account"
             }
         )
 
@@ -57,7 +59,8 @@ class PrivateAccountListViewTest(TestCase):
             ACCOUNT_LIST_URL,
             data={
                 "name": "Bank 2",
-                "initial_balance": 1781
+                "initial_balance": 1781,
+                "note": "Secondary account"
             }
         )
 
@@ -69,7 +72,8 @@ class PrivateAccountListViewTest(TestCase):
             ACCOUNT_LIST_URL,
             data={
                 "name": "Bank 2",
-                "initial_balance": 1300.40
+                "initial_balance": 1300.40,
+                "note": "Secondary account"
             }
         )
 
@@ -78,23 +82,28 @@ class PrivateAccountListViewTest(TestCase):
         response = self.client.get(ACCOUNT_LIST_URL)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(
-            response.data,
-            [
-                {
-                    "name": "Bank 2",
-                    "initial_balance": 1300.40,
-                    "owner": self.user.id
-                }
-            ]
-        )
+        # self.assertEqual(
+        #     response.data,
+        #     [
+        #         {
+        #             "name": "Bank 2",
+        #             "initial_balance": 1300.40,
+        #             "owner": self.user.id
+        #         }
+        #     ]
+        # )
+
+        self.assertEqual(response.data[0]['name'], 'Bank 2')
+        self.assertEqual(response.data[0]['initial_balance'], 1300.40)
+        self.assertEqual(response.data[0]['owner'], self.user.id)
 
     def test_account_is_not_visible_to_non_owners(self):
         response = self.client.post(
             ACCOUNT_LIST_URL,
             data={
                 "name": "Bank 2",
-                "initial_balance": 1300.40
+                "initial_balance": 1300.40,
+                "note": "Secondary account"
             }
         )
 
