@@ -5,9 +5,9 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Account
+from .models import Account, Category
 from .permissions import IsOwner
-from .serializers import AccountSerializer
+from .serializers import AccountSerializer, CategorySerializer
 
 
 class AccountList(APIView):
@@ -73,5 +73,72 @@ class AccountDetail(APIView):
     def delete(self, request, pk):
         account = self.get_object(pk)
         account.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CategoryList(APIView):
+    """List all expense categories or create a new one"""
+
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
+
+    def get(self, request):
+        categories = Category.objects.filter(owner=request.user)
+
+        for category in categories:
+            self.check_object_permissions(request, category)
+
+        serializer = CategorySerializer(categories, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        data = {
+            'name': request.data['name'],
+            'icon_name': request.data['icon_name'],
+            'icon_type': request.data['icon_type'],
+            'owner': request.user.id
+        }
+
+        serializer = CategorySerializer(data=data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class CategoryDetail(APIView):
+    """Retrieve, update or delete an category instance"""
+
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
+
+    def get_object(self, pk):
+        try:
+            return Category.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            raise Http404
+
+    def get(self, request, pk):
+        category = self.get_object(pk)
+        serializer = CategorySerializer(category)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        category = self.get_object(pk)
+        serializer = CategorySerializer(category, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        category = self.get_object(pk)
+        category.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)

@@ -14,6 +14,7 @@ class AccountSerializer(serializers.ModelSerializer):
             message='This account name already exists'
         )]
 
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
