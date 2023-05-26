@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from .models import Account
+from .models import Account, Category
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -12,4 +12,14 @@ class AccountSerializer(serializers.ModelSerializer):
             queryset=Account.objects.all(),
             fields=('name', 'owner'),
             message='This account name already exists'
+        )]
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = '__all__'
+        validators = [UniqueTogetherValidator(
+            queryset=Category.objects.all(),
+            fields=('name', 'owner'),
+            message='This category name already exists'
         )]

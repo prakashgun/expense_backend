@@ -24,5 +24,7 @@ class Category(models.Model):
     name = models.CharField(max_length=100)
     icon_name = models.CharField(max_length=100)
     icon_type = models.CharField(max_length=100)
+    owner = models.ForeignKey(get_user_model(), related_name='categories', on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
