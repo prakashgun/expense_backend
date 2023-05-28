@@ -81,18 +81,6 @@ class PrivateAccountListViewTest(TestCase):
 
         response = self.client.get(ACCOUNT_LIST_URL)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        # self.assertEqual(
-        #     response.data,
-        #     [
-        #         {
-        #             "name": "Bank 2",
-        #             "initial_balance": 1300.40,
-        #             "owner": self.user.id
-        #         }
-        #     ]
-        # )
-
         self.assertEqual(response.data[0]['name'], 'Bank 2')
         self.assertEqual(response.data[0]['initial_balance'], 1300.40)
         self.assertEqual(response.data[0]['owner'], self.user.id)
