@@ -4,8 +4,10 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from .utilities import Utilities
+from ..models import Account
 
 ACCOUNT_LIST_URL = reverse('expense:account-list')
+ACCOUNT_DETAIL_URL = reverse('expense:account-detail', kwargs={'pk': 'some_id'})
 
 
 class PublicAccountListViewTest(TestCase):
@@ -17,6 +19,9 @@ class PublicAccountListViewTest(TestCase):
         response = self.client.get(ACCOUNT_LIST_URL)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
+    def test_detail_account_unauthenticated_permissions(self):
+        response = self.client.get(ACCOUNT_LIST_URL)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 class PrivateAccountListViewTest(TestCase):
 
@@ -106,3 +111,19 @@ class PrivateAccountListViewTest(TestCase):
             response.data,
             []
         )
+
+    def test_view_added_account(self):
+        response = self.client.post(
+            ACCOUNT_LIST_URL,
+            data={
+                "name": "Bank 2",
+                "initial_balance": 1300.40,
+                "note": "Secondary account"
+            }
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        account_id = Account.objects.latest('id').id
+        response = self.client.get(reverse('expense:account-detail', kwargs={'pk': account_id}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['name'], 'Bank 2')
