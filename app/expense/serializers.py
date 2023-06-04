@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from .models import Account, Category
+from .models import Account, Category, Transaction
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -24,3 +24,8 @@ class CategorySerializer(serializers.ModelSerializer):
             fields=('name', 'owner'),
             message='This category name already exists'
         )]
+
+class TransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = '__all__'
