@@ -53,16 +53,16 @@ class PrivateAccountListViewTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_add_category(self):
-            response = self.client.post(
-                CATEGORY_LIST_URL,
-                data={
-                    "name": "Category 1",
-                    "icon_name": 'Icon name 1',
-                    "icon_type": "Icon type 1"
-                }
-            )
+        response = self.client.post(
+            CATEGORY_LIST_URL,
+            data={
+                "name": "Category 1",
+                "icon_name": 'Icon name 1',
+                "icon_type": "Icon type 1"
+            }
+        )
 
-            self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_add_transaction(self):
         self.test_add_account()

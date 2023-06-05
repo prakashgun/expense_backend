@@ -31,6 +31,7 @@ class Category(models.Model):
     class Meta:
         verbose_name_plural = 'categories'
 
+
 class Transaction(models.Model):
     objects = models.Manager()
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -43,4 +44,3 @@ class Transaction(models.Model):
     transaction_date = models.DateTimeField()
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-
