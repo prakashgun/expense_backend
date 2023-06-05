@@ -35,7 +35,7 @@ class Transaction(models.Model):
     objects = models.Manager()
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255, blank=True)
-    value = models.DecimalField(max_digits=19, decimal_places=4)
+    value = models.FloatField()
     is_income = models.BooleanField(default=False)
     account = models.ForeignKey(Account, related_name='transactions', on_delete=models.CASCADE)
     category = models.ForeignKey(Category, related_name='transactions', on_delete=models.CASCADE)
